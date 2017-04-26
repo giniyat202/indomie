@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project(indomie C)
+find_package(FLEX REQUIRED)
+FLEX_TARGET(SCANNER indomie.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.c)
+add_executable(indomie ${FLEX_SCANNER_OUTPUTS})
+install(TARGETS RUNTIME DESTINATION bin)
