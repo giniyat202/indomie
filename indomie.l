@@ -211,11 +211,13 @@ const int debug = 0;
 %%
 void printstack()
 {
-	if (!debug) return;
-	int *curst = stk + stksz - 1;;
-	fprintf(stderr, "\t\tstack:\n");
-	while (curst >= stk)
-		fprintf(stderr, "\t\t%d\n", *curst--);
+	if (debug)
+	{
+		int *curst = stk + stksz - 1;;
+		fprintf(stderr, "\t\tstack:\n");
+		while (curst >= stk)
+			fprintf(stderr, "\t\t%d\n", *curst--);
+	}
 }
 void execthis(void)
 {
