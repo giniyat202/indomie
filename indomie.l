@@ -127,11 +127,28 @@ const int debug = 0;
 "و هو كسمه اصلا معندهوش غير طعم ".*?" بنت المتناكه" {
 	/* print to stdout */
 	size_t len = strlen(yytext) - 78;
-	char *buf;
+	char *buf, *q;
+	const char *p = yytext + 55;
+	const char *pe = p + len - 1;
+	char spec[127] = {0};
+	spec['!'] = ' ';
+	spec['@'] = '\t';
+	spec['$'] = '\n';
 	
-	buf = malloc(len);
-	memcpy(buf, yytext + 55, len - 1);
-	buf[len - 1] = '\0';
+	q = buf = malloc(len);
+	while(p < pe)
+	{
+		char c = *p++;
+		if (spec[c] != '\0')
+		{
+			if (p >= pe || *p != c)
+				c = spec[c];
+			else
+				p++;
+		}
+		*q++ = c;
+	}
+	*q++ = '\0';
 	
 	curinst->code = CODE_PRINTS;
 	curinst->data = buf;
@@ -207,17 +224,17 @@ void execthis(void)
 		struct inst *cur = insts + pc;
 		if (debug)
 		{
-			printf("%.4d:\t%s", pc, code_name[cur->code]);
+			fprintf(stderr, "%.4d:\t%s", pc, code_name[cur->code]);
 			if (cur->code == CODE_PUSHI)
-				printf(" %d", *(int*)cur->data);
-			printf("\n");
+				fprintf(stderr, " %d", *(int*)cur->data);
+			fprintf(stderr, "\n");
 		}
 		pc++;
 		
 		switch(cur->code)
 		{
 			case CODE_PRINTS:
-				printf("%s\n", cur->data);
+				printf("%s", cur->data);
 				fflush(stdout);
 				break;
 			case CODE_PRINTI:
